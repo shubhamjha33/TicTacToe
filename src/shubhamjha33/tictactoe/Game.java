@@ -1,6 +1,8 @@
 package shubhamjha33.tictactoe;
 
 import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * Created by shubham.jh on 22/07/16.
@@ -8,11 +10,20 @@ import java.io.*;
 public class Game {
     Board b;
     Player one,two;
+    ServerSocket serverSocket;
 
-    public Game(String playerOneName,String playerTwoName){
-        b=new Board();
-        one=new Player(playerOneName,1);
-        two=new Player(playerTwoName,2);
+    public Game(int portNumber){
+        try {
+            serverSocket = new ServerSocket(portNumber);
+            b=new Board();
+            Socket socket=serverSocket.accept();
+            one=new Player(socket,1);
+            socket=serverSocket.accept();
+            two=new Player(socket,2);
+        }catch(IOException ioex){
+            ioex.printStackTrace();
+        }
+
     }
 
     public void runGame(){
@@ -21,16 +32,26 @@ public class Game {
         String input;
         int rowx,coly,pos;
         boolean validMove=false;
-        System.out.println("Starting the game. Enter board positions using the following config:");
-        b.init();
+        String initMessage="Starting the game. Enter board positions using the following config:\n"+b.init();
+        one.sendMessage(initMessage);
+        two.sendMessage(initMessage);
         while(b.isOver()==-1){
             currPlayer=counter+1;
             do {
                 validMove=false;
-                System.out.println("Player " + currPlayer + " enter the board position(1-9):");
+                String currentBoard="Current Board:\n"+b.displayBoard();
                 try {
-                    input = br.readLine();
-                    pos=Integer.parseInt(input)-1;
+                    pos=0;
+                    switch(currPlayer){
+                        case 1:one.sendMessage(currentBoard);
+                               one.sendMessage(1);
+                               pos = one.getNextMove()-1;
+                            break;
+                        case 2:two.sendMessage(currentBoard);
+                               two.sendMessage(1);
+                               pos = two.getNextMove()-1;
+                            break;
+                    }
                     rowx=pos/3;
                     coly=pos%3;
                     validMove=b.performMove(currPlayer,rowx,coly);
@@ -38,21 +59,41 @@ public class Game {
                     System.out.println(ioex.getMessage());
                 }
                 b.displayBoard();
-                if(!validMove)
-                    System.out.println("Invalid Move!! Please try again!!");
+                if(!validMove) {
+                    switch(currPlayer){
+                        case 1:one.sendMessage(2);
+                            break;
+                        case 2:two.sendMessage(2);
+                            break;
+                    }
+                }
             }while(!validMove);
             counter=(counter+1)%2;
             //System.out.println(counter);
         }
         int winner=b.isOver();
+        String finalBoard="Final Board:\n"+b.displayBoard();
+        one.sendMessage(finalBoard);
+        two.sendMessage(finalBoard);
+        String gameStatus="";
         if(winner==1){
-            System.out.println(one.getName()+" won");
+            gameStatus=one.getName()+" won";
         }
         else if(winner==2){
-            System.out.println(two.getName()+" won");
+            gameStatus=two.getName()+" won";
         }
         else{
-            System.out.println("It was a draw");
+            gameStatus="It was a draw";
+        }
+        gameStatus=gameStatus+"\n";
+        one.sendMessage(gameStatus);
+        two.sendMessage(gameStatus);
+        try {
+            one.closeConnection();
+            two.closeConnection();
+            serverSocket.close();
+        }catch (IOException ex){
+            ex.printStackTrace();
         }
     }
 

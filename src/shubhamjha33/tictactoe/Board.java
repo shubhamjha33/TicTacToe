@@ -80,45 +80,49 @@ public class Board {
         return 3;
     }
 
-    public void displayBoard(){
+    public String displayBoard(){
         int i,j;
+        StringBuffer sb=new StringBuffer("");
         for(i=0;i<3;i++){
             for(j=0;j<3;j++){
                 if(current_board[i][j]==0)
-                    System.out.print(" ");
+                    sb.append(" ");
                 else if(current_board[i][j]==1)
-                    System.out.print("X");
+                    sb.append("X");
                 else
-                    System.out.print("O");
+                    sb.append("O");
                 if(j!=2)
-                    System.out.print("|");
+                    sb.append("|");
             }
-            System.out.println();
+            sb.append("\n");
             if(i!=2){
                 for(j=0;j<6;j++){
-                    System.out.print("-");
+                    sb.append("-");
                 }
-                System.out.println();
+                sb.append("\n");
             }
         }
+        return sb.toString();
     }
 
-    public void init(){
+    public String init(){
+        StringBuffer sb=new StringBuffer("");
         int i,j,val;
         for(i=1;i<=3;i++){
             for(j=1;j<=3;j++){
                 val=(i-1)*3+j;
-                System.out.print(val);
+                sb.append(val);
                 if(j!=3)
-                    System.out.print("|");
+                    sb.append("|");
             }
-            System.out.println();
+            sb.append("\n");
             if(i!=3){
                 for(j=1;j<=6;j++){
-                    System.out.print("-");
+                    sb.append("-");
                 }
-                System.out.println();
+                sb.append("\n");
             }
         }
+        return sb.toString();
     }
 }

@@ -7,17 +7,18 @@ import java.io.InputStreamReader;
 public class Main {
 
     public static void main(String[] args) {
-        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Enter your name player one:");
-        String playerOne="one",playerTwo="two";
-        try {
-            playerOne = br.readLine();
-            System.out.println("Enter your name player two:");
-            playerTwo=br.readLine();
-        }catch(IOException ioex){
-            System.out.println(ioex.getMessage());
+        if(args.length!=1){
+            System.out.println("Port number for server not provided");
+            System.exit(1);
         }
-        Game game=new Game(playerOne,playerOne);
+        int portNumber=0;
+        try {
+            portNumber = Integer.parseInt(args[0]);
+        }catch(NumberFormatException ex){
+            ex.printStackTrace();
+            System.exit(1);
+        }
+        Game game=new Game(portNumber);
         game.runGame();
 	}
 }
