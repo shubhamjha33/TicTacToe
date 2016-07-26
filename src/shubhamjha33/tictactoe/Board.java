@@ -6,7 +6,7 @@ package shubhamjha33.tictactoe;
 public class Board {
     private int[][] current_board;
 
-    public Board(){
+    public Board() {
         current_board=new int[3][3];
         for(int i=0;i<3;i++){
             for(int j=0;j<3;j++){
@@ -15,14 +15,14 @@ public class Board {
         }
     }
 
-    private boolean isValid(int rowx,int coly){
-        if(rowx>=0&&rowx<3&&coly>=0&&coly<3){
+    private boolean isValid(int rowx, int coly) {
+        if(rowx >= 0 && rowx < 3 && coly >= 0 && coly < 3){
             return true;
         }
         return false;
     }
 
-    public boolean performMove(int playerId,int rowx,int coly){
+    public boolean performMove(int playerId, int rowx, int coly) {
         if(isValid(rowx,coly)){
             if(current_board[rowx][coly]!=0)
                 return false;
@@ -34,9 +34,9 @@ public class Board {
         return false;
     }
 
-    public int isOver(){
+    public int isOver() {
         int counter=0,i,j,playerId;
-        for(playerId=1;playerId<=2;playerId++) {
+        for( playerId = 1; playerId <= 2 ; playerId++) {
             //horizontal
             for (i = 0; i < 3; i++) {
                 for (j = 0; j < 3; j++) {
@@ -80,7 +80,7 @@ public class Board {
         return 3;
     }
 
-    public String displayBoard(){
+    public String displayBoard() {
         int i,j;
         StringBuffer sb=new StringBuffer("");
         for(i=0;i<3;i++){
